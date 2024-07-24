@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".MainActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Amount">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCurrencyCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Currency Code">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCurrencyCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:nextFocusDown="@id/tilMerchantId" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMerchantId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Merchant ID"
+            android:nextFocusDown="@id/tilApiKey">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMerchantId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilApiKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="API Key"
+            android:nextFocusDown="@id/tilCustomerId">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etApiKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomerId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Customer ID">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCustomerId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbCrash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Crash in 20 seconds"
+            android:textColor="@color/redScale1" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbShowPaymentDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Show Payment Details" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbPreloadPayload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Preload Payload"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbNoFormsOfPayment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="No forms of payment"
+                app:layout_constraintStart_toEndOf="@id/cbPreloadPayload"
+                app:layout_constraintTop_toTopOf="@id/cbPreloadPayload" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbGooglePay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Google Pay"
+                app:layout_constraintEnd_toStartOf="@id/cbStcPay"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbStcPay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Stc Pay"
+                app:layout_constraintEnd_toStartOf="@id/cbOttuPg"
+                app:layout_constraintStart_toEndOf="@id/cbGooglePay"
+                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbOttuPg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Ottu PG"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cbStcPay"
+                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbTokenPay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Token Pay"
+                app:layout_constraintEnd_toStartOf="@id/cbRedirect"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cbGooglePay" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbRedirect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Redirect"
+                app:layout_constraintEnd_toStartOf="@id/cbAddCard"
+                app:layout_constraintStart_toEndOf="@id/cbTokenPay"
+                app:layout_constraintTop_toTopOf="@id/cbTokenPay" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbAddCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Add Card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toEndOf="@id/cbRedirect"
+                app:layout_constraintTop_toTopOf="@id/cbTokenPay" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnThemeCustomization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Theme Customization" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGetSession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Session Id" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>

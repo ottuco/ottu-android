@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvItemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingHorizontal="16dp"
+        tools:text="Sdk Component" />
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/grayScale4"
+        android:layout_height="1dp"/>
+
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:id="@+id/expandableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grayScale4"
+        app:el_duration="300"
+        app:el_expanded="false">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvParams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
+
+</LinearLayout>
