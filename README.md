@@ -38,7 +38,7 @@ allprojects {
 }
     
 dependencies {
-       implementation("com.github.ottuco:ottu-android-checkout:1.0.4")
+       implementation("com.github.ottuco:ottu-android-checkout:1.0.5")
 }
 ```
 
