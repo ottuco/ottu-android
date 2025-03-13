@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
 import com.ottu.checkout.Checkout
 import com.ottu.checkout.network.model.payment.ApiTransactionDetails
 import com.ottu.checkout.ui.base.CheckoutSdkFragment
@@ -143,29 +144,31 @@ class CheckoutSampleActivity : AppCompatActivity() {
             Checkout.release()
         }
 
-        checkoutFragment = Checkout.init(
-            context = this@CheckoutSampleActivity,
-            builder = builder,
-            setupPreload = setupPreload,
-            successCallback = {
-                Log.e("TAG", "successCallback: $it")
-                showResultDialog(it)
-            },
-            cancelCallback = {
-                Log.e("TAG", "cancelCallback: $it")
-                showResultDialog(it)
-            },
-            errorCallback = { errorData, throwable ->
-                Log.e("TAG", "errorCallback: $errorData")
-                showResultDialog(errorData, throwable)
-            },
-        )
+        lifecycleScope.launch {
+            checkoutFragment = Checkout.init(
+                context = this@CheckoutSampleActivity,
+                builder = builder,
+                setupPreload = setupPreload,
+                successCallback = {
+                    Log.e("TAG", "successCallback: $it")
+                    showResultDialog(it)
+                },
+                cancelCallback = {
+                    Log.e("TAG", "cancelCallback: $it")
+                    showResultDialog(it)
+                },
+                errorCallback = { errorData, throwable ->
+                    Log.e("TAG", "errorCallback: $errorData")
+                    showResultDialog(errorData, throwable)
+                },
+            )
 
-        checkoutFragment?.let {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.ottuPaymentView, it)
-                .commit()
+            checkoutFragment?.let {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.ottuPaymentView, it)
+                    .commit()
+            }
         }
     }
 
