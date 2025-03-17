@@ -357,7 +357,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (cbCardOnsite.isChecked) {
-//                formsOfPayment.add(Checkout.FormsOfPayment.CardOnsite)
+                formsOfPayment.add(Checkout.FormsOfPayment.CardOnsite)
             }
 
 //            if (cbUrpay.isChecked) {
