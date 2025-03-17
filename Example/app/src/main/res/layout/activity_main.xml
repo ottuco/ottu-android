@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="8dp"
         tools:context=".MainActivity">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -96,6 +95,38 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCardExpire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Card Expiry Time">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCardExpire"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cbCrash"
             android:layout_width="wrap_content"
@@ -104,100 +135,137 @@
             android:text="Crash in 20 seconds"
             android:textColor="@color/redScale1" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbShowPaymentDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Show Payment Details" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbShowPaymentDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Show Payment Details" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbPreloadPayload"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="true"
-                android:text="Preload Payload"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="Preload Payload" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Forms of payment" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbNoFormsOfPayment"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="false"
-                android:text="No forms of payment"
-                app:layout_constraintStart_toEndOf="@id/cbPreloadPayload"
-                app:layout_constraintTop_toTopOf="@id/cbPreloadPayload" />
+                android:text="No forms of payment" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbGooglePay"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="true"
-                android:text="Google Pay"
-                app:layout_constraintEnd_toStartOf="@id/cbStcPay"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+                android:text="Google Pay" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbStcPay"
-                android:layout_width="wrap_content"
+                android:id="@+id/cbFlexMethods"
+                android:layout_width="0dp"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="true"
-                android:text="Stc Pay"
-                app:layout_constraintEnd_toStartOf="@id/cbOttuPg"
-                app:layout_constraintStart_toEndOf="@id/cbGooglePay"
-                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+                android:text="Flex Methods" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbOttuPg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Ottu PG"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cbStcPay"
-                app:layout_constraintTop_toBottomOf="@id/cbNoFormsOfPayment" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbTokenPay"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="true"
-                android:text="Token Pay"
-                app:layout_constraintEnd_toStartOf="@id/cbRedirect"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cbGooglePay" />
+                android:text="Token Pay" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbRedirect"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:checked="true"
-                android:text="Redirect"
-                app:layout_constraintEnd_toStartOf="@id/cbAddCard"
-                app:layout_constraintStart_toEndOf="@id/cbTokenPay"
-                app:layout_constraintTop_toTopOf="@id/cbTokenPay" />
+                android:text="Redirect" />
+
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbAddCard"
-                android:layout_width="wrap_content"
+                android:id="@+id/cbStcPay"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="Add Card"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toEndOf="@id/cbRedirect"
-                app:layout_constraintTop_toTopOf="@id/cbTokenPay" />
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Stc Pay" />
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbUrpay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Urpay"
+                android:visibility="gone" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbCardOnsite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="CardOnsite" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="PG codes" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/pgCodesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnThemeCustomization"
