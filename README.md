@@ -38,7 +38,7 @@ allprojects {
 }
     
 dependencies {
-       implementation("com.github.ottuco:ottu-android-checkout:1.0.6")
+       implementation("com.github.ottuco:ottu-android-checkout:2.1.0")
 }
 ```
 
@@ -49,7 +49,8 @@ Below is the sample code of how you can use Ottu Payment SDK.
     val theme = getCheckoutTheme()
 
     val builder = Checkout
-            .Builder(merchantId, sessionId, apiKey, amount)
+            .Builder(merchantId!!, sessionId, apiKey!!, amount!!)
+            .paymentOptionsDisplaySettings(paymentOptionsDisplaySettings)
             .formsOfPayments(formsOfPayment)
             .theme(theme)
             .logger(Checkout.Logger.INFO)
