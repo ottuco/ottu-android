@@ -13,6 +13,7 @@ const val THEME_BUTTON = "THEME_BUTTON"
 const val THEME_SELECTOR_BUTTON = "THEME_SELECTOR_BUTTON"
 const val THEME_BACK_BUTTON = "THEME_BACK_BUTTON"
 const val THEME_SWITCH = "THEME_SWITCH"
+const val THEME_SHOW_MORE_BUTTON = "THEME_SHOW_MORE_BUTTON"
 const val THEME_SDK_MARGINS = "THEME_SDK_MARGINS"
 const val THEME_SDK_BACKGROUND_COLOR = "THEME_SDK_BACKGROUND_COLOR"
 const val THEME_SDK_MODAL_BACKGROUND_COLOR = "THEME_SDK_MODAL_BACKGROUND_COLOR"
@@ -84,6 +85,7 @@ fun getComponents(): List<ComponentItem> {
         add(ComponentItem(THEME_BUTTON, "Button"))
         add(ComponentItem(THEME_SELECTOR_BUTTON, "Selector Button"))
         add(ComponentItem(THEME_BACK_BUTTON, "Back Button"))
+        add(ComponentItem(THEME_SHOW_MORE_BUTTON, "Show More"))
         add(ComponentItem(THEME_SWITCH, "Switch"))
         add(ComponentItem(THEME_SDK_SAVE_PHONE_ICON_COLOR, "Save Phone Number Icon Color"))
         add(ComponentItem(THEME_SDK_SELECTOR_ICON_COLOR, "Select Payment Icon Color"))

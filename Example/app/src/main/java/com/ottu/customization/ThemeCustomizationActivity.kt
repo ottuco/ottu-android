@@ -116,6 +116,10 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 handleSwitch(isDark)
             }
 
+            THEME_SHOW_MORE_BUTTON -> {
+                handleShowMore(isDark)
+            }
+
             THEME_SDK_MARGINS -> {
                 handleMargins(isDark)
             }
@@ -188,6 +192,16 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 appearanceDark = appearanceDark.copy(feesSubtitleText = it)
             } else {
                 appearanceLight = appearanceLight.copy(feesSubtitleText = it)
+            }
+        }
+    }
+
+    private fun handleShowMore(isDark: Boolean) {
+        changeTextStyle(this) {
+            if (isDark) {
+                appearanceDark = appearanceDark.copy(showMoreButton = it)
+            } else {
+                appearanceLight = appearanceLight.copy(showMoreButton = it)
             }
         }
     }

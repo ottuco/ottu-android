@@ -3,13 +3,13 @@ package com.ottu
 import android.content.Context
 import android.os.Bundle
 import android.text.InputFilter
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,9 +48,14 @@ class MainActivity : AppCompatActivity() {
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
 
-    //    private var customerPhone = "966557877988"
-    private var customerPhone: String? = "966563154349"
-//    private var customerPhone = "99459272"
+    // STC phone number:
+//    private var customerPhone: String? = "966557877988"
+
+    // URPay phone number:
+//    private var customerPhone: String? = "966563154349"
+
+    // Tamara phone number:
+    private var customerPhone: String? = "99459272"
 
     private var currentSessionId: String? = null
     private var currentPreloadPayload: ApiTransactionDetails? = null
@@ -65,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         PgCodeItem("stc_pay"),
         PgCodeItem("nbk-mpgs"),
 //        PgCodeItem("urpay"),
-//        PgCodeItem("tamara"),
-//        PgCodeItem("tabby"),
+        PgCodeItem("tamara"),
+        PgCodeItem("tabby"),
         PgCodeItem("tap_pg"),
         PgCodeItem("ottu_sdk", false),
     )
@@ -101,6 +106,10 @@ class MainActivity : AppCompatActivity() {
                 if (num in 1..365) null else ""
             }
         )
+
+        cbPaymentOptionMode.setOnCheckedChangeListener { buttonView, isChecked ->
+            tilPaymentListVisibleItems.isEnabled = isChecked
+        }
 
         cbNoFormsOfPayment.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -147,19 +156,6 @@ class MainActivity : AppCompatActivity() {
                     setOnCheckedChangeListener { view, isChecked ->
                         val index = pgCodes.indexOfFirst { code -> code.value == it.value }
                         val toUpdate = pgCodes[index]
-
-                        val conflictingCode = when (toUpdate.value) {
-                            "ottu_sdk" -> "tap_pg"
-                            "tap_pg" -> "ottu_sdk"
-                            else -> null
-                        }
-
-                        if (isChecked && conflictingCode != null && pgCodes.any { it.value == conflictingCode && it.isChecked }) {
-                            Toast.makeText(context, "You can only use one `OttuPG` pg_code at a time.", Toast.LENGTH_SHORT).show()
-                            view.isChecked = false
-                            return@setOnCheckedChangeListener
-                        }
-
                         pgCodes[index] = toUpdate.copy(isChecked = isChecked)
                     }
                 }
@@ -256,6 +252,7 @@ class MainActivity : AppCompatActivity() {
                     formsOfPayment,
                     cbShowPaymentDetails.isChecked,
                     currentPreloadPayload,
+                    getPaymentOptionSettings(),
                     currentThemeAppearancePair?.first,
                     currentThemeAppearancePair?.second,
                     cbCrash.isChecked
@@ -340,9 +337,9 @@ class MainActivity : AppCompatActivity() {
                 formsOfPayment.add(Checkout.FormsOfPayment.GooglePay)
             }
 
-//            if (cbFlexMethods.isChecked) {
-//                formsOfPayment.add(Checkout.FormsOfPayment.FlexMethods)
-//            }
+            if (cbFlexMethods.isChecked) {
+                formsOfPayment.add(Checkout.FormsOfPayment.FlexMethods)
+            }
 
             if (cbStcPay.isChecked) {
                 formsOfPayment.add(Checkout.FormsOfPayment.StcPay)
@@ -368,6 +365,18 @@ class MainActivity : AppCompatActivity() {
         return if (binding?.cbNoFormsOfPayment?.isChecked == true) null else formsOfPayment
     }
 
+    private fun getPaymentOptionSettings(): Checkout.PaymentOptionsDisplaySettings {
+        val mode = if (binding?.cbPaymentOptionMode?.isChecked == true) {
+            Checkout.PaymentOptionsDisplaySettings.PaymentOptionsDisplayMode.List(
+                binding?.etPaymentListVisibleItems
+                    ?.text?.toString()?.toIntOrNull() ?: 5
+            )
+        } else {
+            Checkout.PaymentOptionsDisplaySettings.PaymentOptionsDisplayMode.BottomSheet
+        }
+
+        return Checkout.PaymentOptionsDisplaySettings(mode, binding?.etSelectedPgCode?.text?.toString())
+    }
 
     private fun View.hideSoftKeyboard() {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
