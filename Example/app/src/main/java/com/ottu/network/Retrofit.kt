@@ -8,12 +8,16 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.time.Duration
 
 private fun okhttp(apiKey: String) = OkHttpClient
     .Builder()
     .addInterceptor(HttpLoggingInterceptor().also {
         it.level = HttpLoggingInterceptor.Level.BODY
     })
+    .readTimeout(Duration.ofSeconds(30))
+    .writeTimeout(Duration.ofSeconds(30))
+    .connectTimeout(Duration.ofSeconds(30))
     .addInterceptor(Interceptor { chain ->
         val request = chain.request().newBuilder()
             .addHeader(

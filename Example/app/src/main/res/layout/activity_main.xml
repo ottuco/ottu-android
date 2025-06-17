@@ -127,6 +127,22 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSelectedPgCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Default selected payment">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSelectedPgCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cbCrash"
             android:layout_width="wrap_content"
@@ -158,6 +174,43 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbPaymentOptionMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:checked="false"
+                android:text="Show payment options list" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPaymentListVisibleItems"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Payment count">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPaymentListVisibleItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:enabled="false"
+                    android:maxLength="3"
+                    android:inputType="numberDecimal"
+                    android:digits="0123456789"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -183,12 +236,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Google Pay" />
+                android:text="Google Pay"
+                android:visibility="gone" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbFlexMethods"
                 android:layout_width="0dp"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"

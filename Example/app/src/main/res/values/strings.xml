@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ottu-android-checkout-sample</string>
+    <string name="app_name" translatable="false">ottu-android-private-sample</string>
+    <string name="failed">Failed</string>
 </resources>

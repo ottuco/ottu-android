@@ -62,6 +62,11 @@ class CheckoutSampleActivity : AppCompatActivity() {
         )
     }
 
+    private val paymentOptionsDisplaySettings by lazy {
+        intent.extras?.getParcelable(PAYMENT_OPTION_SETTINGS_PARAM)
+            ?: Checkout.PaymentOptionsDisplaySettings.DEFAULT
+    }
+
     private val withCrash by lazy {
         intent.extras?.getBoolean(
             WITH_CRASH_PARAM, false
@@ -135,6 +140,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
 
         val builder = Checkout
             .Builder(merchantId!!, sessionId, apiKey!!, amount!!)
+            .paymentOptionsDisplaySettings(paymentOptionsDisplaySettings)
             .formsOfPayments(formsOfPayment)
             .theme(theme)
             .logger(Checkout.Logger.INFO)
@@ -145,33 +151,35 @@ class CheckoutSampleActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            checkoutFragment = Checkout.init(
-                context = this@CheckoutSampleActivity,
-                builder = builder,
-                setupPreload = setupPreload,
-                successCallback = {
-                    Log.e("TAG", "successCallback: $it")
-                    showResultDialog(it)
-                },
-                cancelCallback = {
-                    Log.e("TAG", "cancelCallback: $it")
-                    showResultDialog(it)
-                },
-                errorCallback = { errorData, throwable ->
-                    Log.e("TAG", "errorCallback: $errorData")
-                    showResultDialog(errorData, throwable)
-                },
-            )
-
-            checkoutFragment?.let {
+            runCatching {
+                Checkout.init(
+                    context = this@CheckoutSampleActivity,
+                    builder = builder,
+                    setupPreload = setupPreload,
+                    successCallback = {
+                        Log.e("TAG", "successCallback: $it")
+                        showResultDialog(it)
+                    },
+                    cancelCallback = {
+                        Log.e("TAG", "cancelCallback: $it")
+                        showResultDialog(it)
+                    },
+                    errorCallback = { errorData, throwable ->
+                        Log.e("TAG", "errorCallback: $errorData")
+                        showResultDialog(errorData, throwable)
+                    },
+                )
+            }.onSuccess {
+                checkoutFragment = it
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.ottuPaymentView, it)
                     .commit()
+            }.onFailure {
+                showErrorDialog(it)
             }
         }
     }
-
 
     private fun getCheckoutTheme(): CheckoutTheme {
         return CheckoutTheme(
@@ -210,6 +218,21 @@ class CheckoutSampleActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun showErrorDialog(throwable: Throwable? = null) {
+        if (throwable is SecurityException) return
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.failed)
+            .setMessage(throwable?.message ?: "Unknown Error")
+            .setPositiveButton(
+                android.R.string.ok
+            ) { dialog, which ->
+                finish()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         scope.cancel()
@@ -219,9 +242,6 @@ class CheckoutSampleActivity : AppCompatActivity() {
     }
 
     companion object {
-
-        private const val LANGUAGE_SAVED_PARAM = "LANGUAGE_SAVED_PARAM"
-
         private const val AMOUNT_PARAM = "AMOUNT_PARAM"
         private const val MERCHANT_ID_PARAM = "MERCHANT_ID_PARAM"
         private const val API_KEY_PARAM = "API_KEY_PARAM"
@@ -230,6 +250,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
         private const val FORMS_OF_PAYMENT_PARAM = "FORMS_OF_PAYMENT_PARAM"
         private const val SHOW_PAYMENT_DETAILS_PARAM = "SHOW_PAYMENT_DETAILS_PARAM"
         private const val SETUP_PAYLOAD_PARAM = "SETUP_PAYLOAD_PARAM"
+        private const val PAYMENT_OPTION_SETTINGS_PARAM = "PAYMENT_OPTION_SETTINGS_PARAM"
         private const val THEME_APPEARANCE_LIGHT_PARAM = "THEME_APPEARANCE_LIGHT_PARAM"
         private const val THEME_APPEARANCE_DARK_PARAM = "THEME_APPEARANCE_DARK_PARAM"
 
@@ -245,6 +266,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
             formsOfPayment: ArrayList<Checkout.FormsOfPayment>?,
             showPaymentDetails: Boolean,
             preloadPayload: ApiTransactionDetails? = null,
+            paymentOptionsDisplaySettings: Checkout.PaymentOptionsDisplaySettings? = null,
             appearanceLight: CheckoutTheme.Appearance? = null,
             appearanceDark: CheckoutTheme.Appearance? = null,
             withCrash: Boolean = false
@@ -258,6 +280,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 putExtra(SHOW_PAYMENT_DETAILS_PARAM, showPaymentDetails)
                 putParcelableArrayListExtra(FORMS_OF_PAYMENT_PARAM, formsOfPayment)
                 putExtra(SETUP_PAYLOAD_PARAM, preloadPayload)
+                putExtra(PAYMENT_OPTION_SETTINGS_PARAM, paymentOptionsDisplaySettings)
                 putExtra(THEME_APPEARANCE_LIGHT_PARAM, appearanceLight)
                 putExtra(THEME_APPEARANCE_DARK_PARAM, appearanceDark)
                 putExtra(WITH_CRASH_PARAM, withCrash)
