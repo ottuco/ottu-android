@@ -44,10 +44,10 @@ android {
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.1.0")
+    implementation("com.github.ottuco:ottu-android-checkout:2.1.2")
 
     //FIXME
-    implementation("io.sentry:sentry-android:7.11.0")
+    implementation(libs.sentry)
 
     implementation(libs.datadog.rum)
     implementation(libs.datadog.session.replay)
