@@ -29,6 +29,7 @@ expandableLayout = "2.9.2"
 numberPicker = "1.0.3"
 datadogPlugin = "1.14.0"
 datadog = "2.11.0"
+sentry = "8.17.0"
 
 
 [libraries]
@@ -62,6 +63,7 @@ datadog-session-replay = { group = "com.datadoghq", name = "dd-sdk-android-sessi
 colorpickerview = { group = "com.github.skydoves", name = "colorpickerview", version.ref = "colorPicket" }
 expandablelayout = { group = "com.github.cachapa", name = "ExpandableLayout", version.ref = "expandableLayout" }
 numberpicker = { group = "com.github.ch-muhammad-adil", name = "MaterialPickerDialog", version.ref = "numberPicker" }
+sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
 
 #Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
