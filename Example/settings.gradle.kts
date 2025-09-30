@@ -23,11 +23,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 }
 
-rootProject.name = "ottu-android-checkout-sample"
+rootProject.name = "ottu-android-private-sample"
 include(":app")
 
 val localPropertiesFile = File(rootDir, "local.properties")
@@ -42,6 +44,7 @@ if (localPropertiesFile.exists()) {
 }
 
 val ottuSdkPath: String? = localProperties.getProperty("ottuSdk")
+println("Android Sample -local.properties, ottuSdk path: $ottuSdkPath")
 
 // Check if :ottu-android-checkout is included as a dependency
 val appBuildGradleFile = File(rootProject.projectDir, "app/build.gradle.kts")
@@ -49,17 +52,19 @@ val appBuildGradleFile = File(rootProject.projectDir, "app/build.gradle.kts")
 if (appBuildGradleFile.exists()) {
     val buildGradleContent = appBuildGradleFile.readLines()
     val isDependencyExist = buildGradleContent.any { line ->
-        line.contains("""implementation(project(":ottu-android-checkout"))""") && !line.trim()
+        line.contains("""com.github.ottuco:ottu-android-checkout""") && !line.trim()
             .startsWith("//")
     }
-    if (isDependencyExist) {
-        if (ottuSdkPath == null) {
-            throw GradleException(
-                "Property 'ottuSdk' not found in local.properties. " +
-                        "Use this: \"ottuSdk=/path/to/your/ottu-android-checkout/app\" with the actual path to your module."
-            )
+    println("Android Sample - isDependencyExist: $isDependencyExist")
+    if (isDependencyExist && ottuSdkPath != null) {
+        println("Android Sample - include build: $ottuSdkPath")
+        includeBuild("$ottuSdkPath") {
+            dependencySubstitution {
+                substitute(module("com.github.ottuco:ottu-android-checkout:"))
+                    .using(project(":"))
+            }
         }
-        include(":ottu-android-checkout")
-        project(":ottu-android-checkout").projectDir = File(ottuSdkPath)
+    } else {
+        println("Android Sample - doesn't include local SDK: $ottuSdkPath")
     }
 }

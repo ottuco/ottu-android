@@ -9,11 +9,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ottu.checkout.Checkout
+import com.ottu.checkout.data.model.payment.AutoDebitAgreement
+import com.ottu.checkout.data.model.payment.PayloadPaymentType
 import com.ottu.checkout.network.model.payment.ApiTransactionDetails
 import com.ottu.checkout.ui.theme.CheckoutTheme
 import com.ottu.checkout.ui.util.setOnSingleClickListener
@@ -34,7 +35,10 @@ class MainActivity : AppCompatActivity() {
     private var amount = 10.0
 
     private var merchantId = "alpha.ottu.net"
-    private var apiKey = "cHSLW0bE.56PLGcUYEhRvzhHVVO9CbF68hmDiXcPI"
+    //private var merchantId = "staging4.ottu.dev"
+
+    //private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3" //stage
+    private var apiKey = "cHSLW0bE.56PLGcUYEhRvzhHVVO9CbF68hmDiXcPI" //alpha
 
     //    private var merchantId = "staging4.ottu.dev"
 //    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3"
@@ -74,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         PgCodeItem("tabby"),
         PgCodeItem("tap_pg"),
         PgCodeItem("ottu_sdk", false),
+        PgCodeItem("muscatbank_demo", false),
     )
 
     private val themeCustomizationActivityResultLauncher =
@@ -296,9 +301,13 @@ class MainActivity : AppCompatActivity() {
     ): SessionResponse? {
         val services = retrofit(merchantId, apiKey).services()
 
-        val language = Locale.getDefault().language.ifEmpty { "en" }
+        var language = Locale.getDefault().language.ifEmpty { "en" }
+        if (language != "ar")
+            language = "en"
 
         return try {
+            val payloadPaymentType = if (binding?.cbAutoDebit?.isChecked == true
+            ) PayloadPaymentType.AUTO_DEBIT else null
             val request = CreateTransactionRequest(
                 amount = amount.toString(),
                 currency_code = currencyCode,
@@ -319,7 +328,9 @@ class MainActivity : AppCompatActivity() {
                 card_acceptance_criteria = binding?.etCardExpire?.text?.takeIf { it.isNotEmpty() }
                     ?.let {
                         CreateTransactionRequest.CardAcceptanceCriteria(it.toString().toInt())
-                    }
+                    },
+                payment_type = payloadPaymentType,
+                agreement = if (payloadPaymentType == PayloadPaymentType.AUTO_DEBIT) AutoDebitAgreement.default() else null
             )
 
             services?.createTransaction(language, request)
@@ -375,7 +386,10 @@ class MainActivity : AppCompatActivity() {
             Checkout.PaymentOptionsDisplaySettings.PaymentOptionsDisplayMode.BottomSheet
         }
 
-        return Checkout.PaymentOptionsDisplaySettings(mode, binding?.etSelectedPgCode?.text?.toString())
+        return Checkout.PaymentOptionsDisplaySettings(
+            mode,
+            binding?.etSelectedPgCode?.text?.toString()
+        )
     }
 
     private fun View.hideSoftKeyboard() {

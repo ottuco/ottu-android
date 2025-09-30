@@ -1,5 +1,7 @@
 package com.ottu.network
 
+import com.ottu.checkout.data.model.payment.AutoDebitAgreement
+import com.ottu.checkout.data.model.payment.PayloadPaymentType
 
 data class CreateTransactionRequest(
     val amount: String,
@@ -14,7 +16,9 @@ data class CreateTransactionRequest(
     val billing_address: BillingAddress?,
     val include_sdk_setup_preload: Boolean,
     val card_acceptance_criteria: CardAcceptanceCriteria? = null,
-    val language: String
+    val language: String,
+    val payment_type: PayloadPaymentType? = null,
+    val agreement: AutoDebitAgreement?,
 ) {
 
     data class BillingAddress(
@@ -24,7 +28,7 @@ data class CreateTransactionRequest(
     )
 
     data class CardAcceptanceCriteria(
-        val min_expiry_time: Int
+        val min_expiry_time: Int,
     )
 
 }
