@@ -1,9 +1,9 @@
 [versions]
-agp = "8.3.2"
-kotlin = "1.9.23"
-coroutines = "1.8.1-Beta"
+agp = "8.8.2"
+kotlin = "2.1.0"
+coroutines = "1.9.0"
 parcelize = "2.0.0-RC1"
-ksp = "1.9.23-1.0.19"
+ksp = "2.1.0-1.0.29"
 coreKtx = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"

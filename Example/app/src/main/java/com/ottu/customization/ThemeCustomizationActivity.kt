@@ -72,6 +72,10 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 handleTitleText(isDark)
             }
 
+            THEME_SELECT_PAYMENT_METHOD_HEADER_TEXT -> {
+                handleSelectPaymentHeaderText(isDark)
+            }
+
             THEME_SUBTITLE_TEXT -> {
                 handleSubtitleText(isDark)
             }
@@ -132,6 +136,10 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 handleModalBackgroundColor(isDark)
             }
 
+            THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR -> {
+                handleSelectPaymentHeaderBackgroundColor(isDark)
+            }
+
             THEME_SDK_SELECTOR_ITEM_BACKGROUND_COLOR -> {
                 handleSelectorItemBackgroundColor(isDark)
             }
@@ -162,6 +170,16 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 appearanceDark = appearanceDark.copy(titleText = it)
             } else {
                 appearanceLight = appearanceLight.copy(titleText = it)
+            }
+        }
+    }
+
+    private fun handleSelectPaymentHeaderText(isDark: Boolean) {
+        changeTextStyle(this) {
+            if (isDark) {
+                appearanceDark = appearanceDark.copy(selectPaymentMethodHeaderText = it)
+            } else {
+                appearanceLight = appearanceLight.copy(selectPaymentMethodHeaderText = it)
             }
         }
     }
@@ -267,11 +285,13 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     }
 
     private fun handleBackButton(isDark: Boolean) {
-        openColorPickerView  {
+        openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(backButton = CheckoutTheme.RippleColor(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(backButton = CheckoutTheme.RippleColor(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(backButton = CheckoutTheme.RippleColor(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(backButton = CheckoutTheme.RippleColor(color = it.color))
             }
         }
     }
@@ -289,9 +309,11 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleSdkBackgroundColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(sdkBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(sdkBackgroundColor = CheckoutTheme.Color(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(sdkBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(sdkBackgroundColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }
@@ -299,9 +321,23 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleModalBackgroundColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(modalBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(modalBackgroundColor = CheckoutTheme.Color(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(modalBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(modalBackgroundColor = CheckoutTheme.Color(color = it.color))
+            }
+        }
+    }
+
+    private fun handleSelectPaymentHeaderBackgroundColor(isDark: Boolean) {
+        openColorPickerView {
+            if (isDark) {
+                appearanceDark =
+                    appearanceDark.copy(selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(color = it.color))
+            } else {
+                appearanceLight =
+                    appearanceLight.copy(selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }
@@ -309,9 +345,11 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleSelectorItemBackgroundColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(paymentItemBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(paymentItemBackgroundColor = CheckoutTheme.Color(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(paymentItemBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(paymentItemBackgroundColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }
@@ -319,9 +357,11 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleSavePhoneIconColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(savePhoneNumberIconColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(savePhoneNumberIconColor = CheckoutTheme.Color(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(savePhoneNumberIconColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(savePhoneNumberIconColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }
@@ -329,9 +369,11 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleSelectorIconColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark = appearanceDark.copy(selectorIconColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark =
+                    appearanceDark.copy(selectorIconColor = CheckoutTheme.Color(color = it.color))
             } else {
-                appearanceLight = appearanceLight.copy(selectorIconColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight =
+                    appearanceLight.copy(selectorIconColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }

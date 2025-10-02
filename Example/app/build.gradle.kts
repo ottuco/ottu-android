@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.ottu"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.ottu"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -44,9 +44,8 @@ android {
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.1.3")
+    implementation("com.github.ottuco:ottu-android-checkout:2.1.4")
 
-    //FIXME
     implementation(libs.sentry)
 
     implementation(libs.datadog.rum)
