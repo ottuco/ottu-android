@@ -34,21 +34,17 @@ class MainActivity : AppCompatActivity() {
 
     private var amount = 10.0
 
-    private var merchantId = "alpha.ottu.net"
-    //private var merchantId = "staging4.ottu.dev"
+    private var merchantId = "" // insert your merchant ID
 
-    //private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3" //stage
-    private var apiKey = "cHSLW0bE.56PLGcUYEhRvzhHVVO9CbF68hmDiXcPI" //alpha
+    private var apiKey = "" // insert your API key for a transaction creation
 
-    //    private var merchantId = "staging4.ottu.dev"
-//    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3"
-    private var customerId: String? = "john2"
+    private var customerId: String? = "customer"
     private var currencyCode = "KWD"
     private var transactionType = "e_commerce"
 
-    private var customerFirstName = "John"
-    private var customerLastName = "Smith"
-    private var customerEmail = "john1@some.mail"
+    private var customerFirstName = "Name"
+    private var customerLastName = "Surname"
+    private var customerEmail = "customer@some.mail"
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
 
