@@ -47,14 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var customerEmail = "customer@some.mail"
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
-
-    // STC phone number:
-//    private var customerPhone: String? = "966557877988"
-
-    // URPay phone number:
-//    private var customerPhone: String? = "966563154349"
-
-    // Tamara phone number:
+    
     private var customerPhone: String? = "99459272"
 
     private var currentSessionId: String? = null
