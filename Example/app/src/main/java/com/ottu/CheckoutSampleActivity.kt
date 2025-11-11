@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.ottu.checkout.Checkout
-import com.ottu.checkout.network.model.payment.ApiTransactionDetails
+import com.ottu.checkout.network.model.payment.TransactionDetails
 import com.ottu.checkout.ui.base.CheckoutSdkFragment
 import com.ottu.checkout.ui.theme.CheckoutTheme
 import com.ottu.databinding.ActivityCheckoutSampleBinding
@@ -57,12 +57,12 @@ class CheckoutSampleActivity : AppCompatActivity() {
     }
 
     private val setupPreload by lazy {
-        intent.extras?.getParcelable<ApiTransactionDetails>(
+        intent.extras?.getParcelable<TransactionDetails>(
             SETUP_PAYLOAD_PARAM
         )
     }
 
-    private val paymentOptionsDisplaySettings by lazy {
+    private val displaySettings by lazy {
         intent.extras?.getParcelable(PAYMENT_OPTION_SETTINGS_PARAM)
             ?: Checkout.PaymentOptionsDisplaySettings.DEFAULT
     }
@@ -140,7 +140,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
 
         val builder = Checkout
             .Builder(merchantId!!, sessionId, apiKey!!, amount!!)
-            .paymentOptionsDisplaySettings(paymentOptionsDisplaySettings)
+            .displaySettings(displaySettings)
             .formsOfPayments(formsOfPayment)
             .theme(theme)
             .logger(Checkout.Logger.INFO)
@@ -265,8 +265,8 @@ class CheckoutSampleActivity : AppCompatActivity() {
             customerId: String?,
             formsOfPayment: ArrayList<Checkout.FormsOfPayment>?,
             showPaymentDetails: Boolean,
-            preloadPayload: ApiTransactionDetails? = null,
-            paymentOptionsDisplaySettings: Checkout.PaymentOptionsDisplaySettings? = null,
+            preloadPayload: TransactionDetails? = null,
+            displaySettings: Checkout.PaymentOptionsDisplaySettings? = null,
             appearanceLight: CheckoutTheme.Appearance? = null,
             appearanceDark: CheckoutTheme.Appearance? = null,
             withCrash: Boolean = false
@@ -280,7 +280,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 putExtra(SHOW_PAYMENT_DETAILS_PARAM, showPaymentDetails)
                 putParcelableArrayListExtra(FORMS_OF_PAYMENT_PARAM, formsOfPayment)
                 putExtra(SETUP_PAYLOAD_PARAM, preloadPayload)
-                putExtra(PAYMENT_OPTION_SETTINGS_PARAM, paymentOptionsDisplaySettings)
+                putExtra(PAYMENT_OPTION_SETTINGS_PARAM, displaySettings)
                 putExtra(THEME_APPEARANCE_LIGHT_PARAM, appearanceLight)
                 putExtra(THEME_APPEARANCE_DARK_PARAM, appearanceDark)
                 putExtra(WITH_CRASH_PARAM, withCrash)
