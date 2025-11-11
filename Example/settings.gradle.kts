@@ -29,7 +29,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ottu-android-private-sample"
+rootProject.name = "ottu-android"
 include(":app")
 
 val localPropertiesFile = File(rootDir, "local.properties")

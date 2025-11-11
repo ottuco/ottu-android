@@ -15,7 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ottu.checkout.Checkout
 import com.ottu.checkout.data.model.payment.AutoDebitAgreement
 import com.ottu.checkout.data.model.payment.PayloadPaymentType
-import com.ottu.checkout.network.model.payment.ApiTransactionDetails
+import com.ottu.checkout.network.model.payment.TransactionDetails
 import com.ottu.checkout.ui.theme.CheckoutTheme
 import com.ottu.checkout.ui.util.setOnSingleClickListener
 import com.ottu.customization.ThemeCustomizationActivityResultContract
@@ -34,24 +34,20 @@ class MainActivity : AppCompatActivity() {
 
     private var amount = 10.0
 
-    private var merchantId = "" // insert your merchant ID
-
-    private var apiKey = "" // insert your API key for a transaction creation
-
-    private var customerId: String? = "customer"
+    private var merchantId = ""
+    private var apiKey = ""
+    private var customerId: String? = "john2"
     private var currencyCode = "KWD"
     private var transactionType = "e_commerce"
 
-    private var customerFirstName = "Name"
-    private var customerLastName = "Surname"
-    private var customerEmail = "customer@some.mail"
+    private var customerFirstName = "John"
+    private var customerLastName = "Smith"
+    private var customerEmail = "john1@some.mail"
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
-    
     private var customerPhone: String? = "99459272"
-
     private var currentSessionId: String? = null
-    private var currentPreloadPayload: ApiTransactionDetails? = null
+    private var currentPreloadPayload: TransactionDetails? = null
     private var currentThemeAppearancePair: Pair<CheckoutTheme.Appearance?, CheckoutTheme.Appearance?>? =
         null
 

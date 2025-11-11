@@ -24,6 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.1.4")
+    implementation("com.github.ottuco:ottu-android-checkout:2.1.5")
 
     implementation(libs.sentry)
 
