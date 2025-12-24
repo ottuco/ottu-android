@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlin.android)
@@ -23,8 +25,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -32,22 +34,27 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17) // Use the appropriate JVM version
+        }
     }
 
     buildFeatures {
         viewBinding = true
     }
+    packaging {
+        resources.excludes.add("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
+    }
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.1.5")
+    implementation("com.github.ottuco:ottu-android-checkout:2.1.6")
 
-    implementation(libs.sentry)
 
     implementation(libs.datadog.rum)
     implementation(libs.datadog.session.replay)
