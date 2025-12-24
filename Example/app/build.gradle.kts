@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.1.5")
+    implementation("com.github.ottuco:ottu-android-checkout:2.1.6")
 
     implementation(libs.sentry)
 
