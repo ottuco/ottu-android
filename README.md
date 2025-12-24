@@ -115,7 +115,8 @@ Here is an example of the result dialog :
 
  You may need to include the following lines in your progard-rules.pro file if enable progard or minifyEnble.
 ```java
--keep class Ottu** { *; }
+-keep class com.ottu.** { *; }
+-dontwarn org.koin.androidx.viewmodel.GetViewModelKt
 ```
 
 ## Licenses
