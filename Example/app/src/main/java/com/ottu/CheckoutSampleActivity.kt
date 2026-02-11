@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.ottu.checkout.Checkout
+import com.ottu.checkout.data.model.localization.PayButtonText
+import com.ottu.checkout.data.model.payment.CardVerificationResult
 import com.ottu.checkout.network.model.payment.TransactionDetails
 import com.ottu.checkout.ui.base.CheckoutSdkFragment
 import com.ottu.checkout.ui.theme.CheckoutTheme
@@ -20,6 +22,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+
+private const val TAG = "CheckoutSampleActivity"
 
 class CheckoutSampleActivity : AppCompatActivity() {
 
@@ -32,8 +36,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
     private val apiKey by lazy { intent.extras?.getString(API_KEY_PARAM) }
     private val showPaymentDetails by lazy {
         intent.extras?.getBoolean(
-            SHOW_PAYMENT_DETAILS_PARAM,
-            true
+            SHOW_PAYMENT_DETAILS_PARAM, true
         ) ?: true
     }
     private val sessionId by lazy { intent.extras?.getString(SESSION_ID_PARAM) }
@@ -70,6 +73,18 @@ class CheckoutSampleActivity : AppCompatActivity() {
     private val withCrash by lazy {
         intent.extras?.getBoolean(
             WITH_CRASH_PARAM, false
+        ) ?: false
+    }
+
+    private val withFailPaymentValidation by lazy {
+        intent.extras?.getBoolean(
+            WITH_FAIL_PAYMENT_VALIDATION, false
+        ) ?: false
+    }
+
+    private val useCustomStrings by lazy {
+        intent.extras?.getBoolean(
+            USE_CUSTOM_STRINGS, false
         ) ?: false
     }
 
@@ -132,19 +147,20 @@ class CheckoutSampleActivity : AppCompatActivity() {
             return
         }
 
-        initSdk(sessionId!!, formsOfPayment)
+        initSdk(sessionId!!, formsOfPayment, withFailPaymentValidation, useCustomStrings)
     }
 
-    private fun initSdk(sessionId: String, formsOfPayment: List<Checkout.FormsOfPayment>?) {
+    private fun initSdk(
+        sessionId: String,
+        formsOfPayment: List<Checkout.FormsOfPayment>?,
+        failPaymentValidation: Boolean,
+        useCustomStrings: Boolean,
+    ) {
         val theme = getCheckoutTheme()
 
-        val builder = Checkout
-            .Builder(merchantId!!, sessionId, apiKey!!, amount!!)
-            .displaySettings(displaySettings)
-            .formsOfPayments(formsOfPayment)
-            .theme(theme)
-            .logger(Checkout.Logger.INFO)
-            .build()
+        val builder = Checkout.Builder(merchantId!!, sessionId, apiKey!!, amount!!)
+            .displaySettings(displaySettings).formsOfPayments(formsOfPayment).theme(theme)
+            .logger(Checkout.Logger.INFO).build()
 
         if (Checkout.isInitialized) {
             Checkout.release()
@@ -157,24 +173,32 @@ class CheckoutSampleActivity : AppCompatActivity() {
                     builder = builder,
                     setupPreload = setupPreload,
                     successCallback = {
-                        Log.e("TAG", "successCallback: $it")
+                        Log.e(TAG, "successCallback: $it")
                         showResultDialog(it)
                     },
                     cancelCallback = {
-                        Log.e("TAG", "cancelCallback: $it")
+                        Log.e(TAG, "cancelCallback: $it")
                         showResultDialog(it)
                     },
                     errorCallback = { errorData, throwable ->
-                        Log.e("TAG", "errorCallback: $errorData")
+                        Log.e(TAG, "errorCallback: $errorData")
                         showResultDialog(errorData, throwable)
                     },
+                    verifyPayment = { payload ->
+                        Log.d(TAG, "initSdk, verifyPayment, payload: $payload")
+                        delay(2000)
+                        if (failPaymentValidation) CardVerificationResult.Failure(
+                            getString(R.string.prepayment_failure_message)
+                        ) else CardVerificationResult.Success()
+                    },
+                    payButtonText = if (useCustomStrings) PayButtonText(
+                        en = "Checkout",
+                        ar = "الدفع"
+                    ) else null,
                 )
             }.onSuccess {
                 checkoutFragment = it
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.ottuPaymentView, it)
-                    .commit()
+                supportFragmentManager.beginTransaction().replace(R.id.ottuPaymentView, it).commit()
             }.onFailure {
                 showErrorDialog(it)
             }
@@ -207,30 +231,23 @@ class CheckoutSampleActivity : AppCompatActivity() {
             sb.append(throwable?.message ?: "Unknown Error")
         }
 
-        AlertDialog.Builder(this)
-            .setTitle("Order Information")
-            .setMessage(sb)
-            .setPositiveButton(
-                android.R.string.ok
-            ) { dialog, which ->
-                dialog.dismiss()
-            }
-            .show()
+        AlertDialog.Builder(this).setTitle("Order Information").setMessage(sb).setPositiveButton(
+            android.R.string.ok
+        ) { dialog, which ->
+            dialog.dismiss()
+        }.show()
     }
 
     private fun showErrorDialog(throwable: Throwable? = null) {
         if (throwable is SecurityException) return
 
-        AlertDialog.Builder(this)
-            .setTitle(R.string.failed)
-            .setMessage(throwable?.message ?: "Unknown Error")
-            .setPositiveButton(
+        AlertDialog.Builder(this).setTitle(R.string.failed)
+            .setMessage(throwable?.message ?: "Unknown Error").setPositiveButton(
                 android.R.string.ok
             ) { dialog, which ->
                 finish()
                 dialog.dismiss()
-            }
-            .show()
+            }.show()
     }
 
     override fun onDestroy() {
@@ -253,8 +270,9 @@ class CheckoutSampleActivity : AppCompatActivity() {
         private const val PAYMENT_OPTION_SETTINGS_PARAM = "PAYMENT_OPTION_SETTINGS_PARAM"
         private const val THEME_APPEARANCE_LIGHT_PARAM = "THEME_APPEARANCE_LIGHT_PARAM"
         private const val THEME_APPEARANCE_DARK_PARAM = "THEME_APPEARANCE_DARK_PARAM"
-
         private const val WITH_CRASH_PARAM = "WITH_CRASH_PARAM"
+        private const val WITH_FAIL_PAYMENT_VALIDATION = "WITH_FAIL_PAYMENT_VALIDATION"
+        private const val USE_CUSTOM_STRINGS = "USE_CUSTOM_STRINGS"
 
         fun openActivity(
             context: Context,
@@ -267,9 +285,11 @@ class CheckoutSampleActivity : AppCompatActivity() {
             showPaymentDetails: Boolean,
             preloadPayload: TransactionDetails? = null,
             displaySettings: Checkout.PaymentOptionsDisplaySettings? = null,
+            useCustomStrings: Boolean,
             appearanceLight: CheckoutTheme.Appearance? = null,
             appearanceDark: CheckoutTheme.Appearance? = null,
-            withCrash: Boolean = false
+            withCrash: Boolean = false,
+            failPaymentValidation: Boolean = false,
         ) {
             val intent = Intent(context, CheckoutSampleActivity::class.java).apply {
                 putExtra(AMOUNT_PARAM, amount)
@@ -284,6 +304,8 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 putExtra(THEME_APPEARANCE_LIGHT_PARAM, appearanceLight)
                 putExtra(THEME_APPEARANCE_DARK_PARAM, appearanceDark)
                 putExtra(WITH_CRASH_PARAM, withCrash)
+                putExtra(WITH_FAIL_PAYMENT_VALIDATION, failPaymentValidation)
+                putExtra(USE_CUSTOM_STRINGS, useCustomStrings)
             }
 
             context.startActivity(intent)

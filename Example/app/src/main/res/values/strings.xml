@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">ottu-android-private-sample</string>
+    <string name="app_name" translatable="false">Ottu Sample</string>
     <string name="failed">Failed</string>
+    <string name="prepayment_failure_message">Cannot pay your order.\nPlease, check purchase information</string>
 </resources>

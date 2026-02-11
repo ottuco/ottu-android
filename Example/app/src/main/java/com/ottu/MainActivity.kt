@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
     private var customerPhone: String? = "99459272"
+
     private var currentSessionId: String? = null
     private var currentPreloadPayload: TransactionDetails? = null
     private var currentThemeAppearancePair: Pair<CheckoutTheme.Appearance?, CheckoutTheme.Appearance?>? =
@@ -58,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         PgCodeItem("benefitpay"),
         PgCodeItem("stc_pay"),
         PgCodeItem("nbk-mpgs"),
-//        PgCodeItem("urpay"),
         PgCodeItem("tamara"),
         PgCodeItem("tabby"),
         PgCodeItem("tap_pg"),
@@ -220,6 +220,7 @@ class MainActivity : AppCompatActivity() {
 
         btnPay.setOnSingleClickListener {
             root.hideSoftKeyboard()
+            val useCustomStrings = binding?.cbUseCustomText?.isChecked == true
             val formsOfPayment = getFormsOfPayment()
 
             if (formsOfPayment?.isEmpty() == true) {
@@ -243,9 +244,11 @@ class MainActivity : AppCompatActivity() {
                     cbShowPaymentDetails.isChecked,
                     currentPreloadPayload,
                     getPaymentOptionSettings(),
+                    useCustomStrings,
                     currentThemeAppearancePair?.first,
                     currentThemeAppearancePair?.second,
-                    cbCrash.isChecked
+                    cbCrash.isChecked,
+                    cbFailMerchantPaymentValidation.isChecked,
                 )
             }
         }
@@ -352,10 +355,6 @@ class MainActivity : AppCompatActivity() {
             if (cbCardOnsite.isChecked) {
                 formsOfPayment.add(Checkout.FormsOfPayment.CardOnsite)
             }
-
-//            if (cbUrpay.isChecked) {
-//                formsOfPayment.add(Checkout.FormsOfPayment.URPay)
-//            }
         }
 
         return if (binding?.cbNoFormsOfPayment?.isChecked == true) null else formsOfPayment

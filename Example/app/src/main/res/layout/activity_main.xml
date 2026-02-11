@@ -149,7 +149,17 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="Crash in 20 seconds"
-            android:textColor="@color/redScale1" />
+            android:textColor="@color/redScale1"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbFailMerchantPaymentValidation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Fail payment validation"
+            android:textColor="@color/redScale1"
+            tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -223,6 +233,14 @@
                 android:layout_gravity="center"
                 android:checked="false"
                 android:text="Auto debit" />
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbUseCustomText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:checked="false"
+                android:text="Use custom text" />
         </LinearLayout>
 
         <TextView
