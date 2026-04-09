@@ -3,12 +3,18 @@ package com.ottu
 import android.content.Context
 import android.os.Bundle
 import android.text.InputFilter
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,6 +26,9 @@ import com.ottu.checkout.ui.theme.CheckoutTheme
 import com.ottu.checkout.ui.util.setOnSingleClickListener
 import com.ottu.customization.ThemeCustomizationActivityResultContract
 import com.ottu.databinding.ActivityMainBinding
+import com.ottu.network.BrandingOption
+import com.ottu.network.BrandingOptionsRequest
+import com.ottu.network.BrandingPaymentMethods
 import com.ottu.network.CreateTransactionRequest
 import com.ottu.network.SessionResponse
 import com.ottu.network.retrofit
@@ -34,10 +43,20 @@ class MainActivity : AppCompatActivity() {
 
     private var amount = 10.0
 
-    private var merchantId = ""
-    private var apiKey = ""
+    //private var merchantId = "alpha.ottu.net"
+    //private var merchantId = "alphabulk.ottu.net"
+    private var merchantId = "staging4.ottu.dev"
+
+    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3" //stage
+    //private var apiKey = "cHSLW0bE.56PLGcUYEhRvzhHVVO9CbF68hmDiXcPI" //alpha
+    //private var apiKey = "D0QYgkMT.1FjA2wCDUcdhSZzulcd6XYnr4zz" //alpha bulk
+
+    //    private var merchantId = "staging4.ottu.dev"
+//    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3"
     private var customerId: String? = "john2"
     private var currencyCode = "KWD"
+
+    // private var currencyCode = "BHD"
     private var transactionType = "e_commerce"
 
     private var customerFirstName = "John"
@@ -55,14 +74,20 @@ class MainActivity : AppCompatActivity() {
     private val pgCodes = mutableListOf(
         PgCodeItem("mpgs-testing"),
         PgCodeItem("knet-staging"),
+        PgCodeItem("jamiawallet"),
+        PgCodeItem("cod"),
         PgCodeItem("benefit"),
         PgCodeItem("benefitpay"),
+//        PgCodeItem("benefit-direct"),
+//        PgCodeItem("pg_alphabulk"),
         PgCodeItem("stc_pay"),
         PgCodeItem("nbk-mpgs"),
+//        PgCodeItem("urpay"),
         PgCodeItem("tamara"),
         PgCodeItem("tabby"),
         PgCodeItem("tap_pg"),
-        PgCodeItem("ottu_sdk", false),
+        PgCodeItem("ottu_sdk"),
+        PgCodeItem("cs"),
         PgCodeItem("muscatbank_demo", false),
     )
 
@@ -73,11 +98,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.enableEdgeToEdge(window)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         binding?.setupViews()
+
+        binding?.root?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.updateLayoutParams<MarginLayoutParams> {
+                    leftMargin = insets.left
+                    bottomMargin = insets.bottom
+                    rightMargin = insets.right
+                    topMargin = insets.top
+                }
+
+                // Return CONSUMED if you don't want the window insets to keep passing
+                // down to descendant views.
+                WindowInsetsCompat.CONSUMED
+            }
+        }
     }
 
     private fun ActivityMainBinding.setupViews() {
@@ -212,6 +253,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             fetchSession {
+                Log.d("MainActivity", "session: ${it.session_id}")
                 this@MainActivity.currentSessionId = it.session_id
                 this@MainActivity.currentPreloadPayload = it.sdk_setup_preload_payload
                 btnPay.isEnabled = true
@@ -292,6 +334,7 @@ class MainActivity : AppCompatActivity() {
         var language = Locale.getDefault().language.ifEmpty { "en" }
         if (language != "ar")
             language = "en"
+        val pgCodes = pgCodes.filter { it.isChecked }.map { it.value }
 
         return try {
             val payloadPaymentType = if (binding?.cbAutoDebit?.isChecked == true
@@ -299,7 +342,7 @@ class MainActivity : AppCompatActivity() {
             val request = CreateTransactionRequest(
                 amount = amount.toString(),
                 currency_code = currencyCode,
-                pg_codes = pgCodes.filter { it.isChecked }.map { it.value },
+                pg_codes = pgCodes,
                 type = transactionType,
                 customer_id = customerId,
                 customer_phone = customerPhone,
@@ -318,8 +361,81 @@ class MainActivity : AppCompatActivity() {
                         CreateTransactionRequest.CardAcceptanceCriteria(it.toString().toInt())
                     },
                 payment_type = payloadPaymentType,
-                agreement = if (payloadPaymentType == PayloadPaymentType.AUTO_DEBIT) AutoDebitAgreement.default() else null
+                agreement = if (payloadPaymentType == PayloadPaymentType.AUTO_DEBIT) AutoDebitAgreement.default() else null,
+                extra = CreateTransactionRequest.PaymentDescription("pd"),
+                branding_options = BrandingOptionsRequest(
+                    paymentMethods = BrandingPaymentMethods(
+                         mpgs = BrandingOption(
+                            text = "Branding text for cod",
+                            color = "#92CC00",
+                            fontWeight = 400
+                        )
+                    )
+                )
             )
+
+            if (pgCodes.isNotEmpty()) {
+                val paymentMethods = BrandingPaymentMethods()
+                request.branding_options = BrandingOptionsRequest(
+                    paymentMethods = paymentMethods
+                )
+
+                if (pgCodes.contains("knet-staging")) {
+                    paymentMethods.knetStaging = BrandingOption(
+                        text = "Branding text for KNet",
+                        color = "#009DCC",
+                        fontWeight = 700
+                    )
+                }
+
+                if (pgCodes.contains("cod")) {
+                    paymentMethods.cod = BrandingOption(
+                        text = "Branding text for cod",
+                        color = "#92CC00",
+                        fontWeight = 400
+                    )
+                }
+
+                if (pgCodes.contains("mpgs-testing")) {
+                    paymentMethods.mpgs = BrandingOption(
+                        text = "Branding text for cod",
+                        color = "#92CC00",
+                        fontWeight = 300
+                    )
+                }
+
+                if (pgCodes.contains("cs")) {
+                    paymentMethods.cs = BrandingOption(
+                        text = "Branding text for cs",
+                        color = "#5F9EA0",
+                        fontWeight = 400
+                    )
+                }
+
+                if (pgCodes.contains("nbk-mpgs")) {
+                    paymentMethods.nbk_mpgs = BrandingOption(
+                        text = "Branding text for nbk-mpgs",
+                        color = "#6B8E23",
+                        fontWeight = 800
+                    )
+                }
+
+                if (pgCodes.contains("tap_pg")) {
+                    paymentMethods.tap_pg = BrandingOption(
+                        text = "Branding text for tap_pg",
+                        color = "#FF4500",
+                        fontWeight = 600
+                    )
+                }
+
+                if (pgCodes.contains("ottu_sdk")) {
+                    paymentMethods.ottu_sdk = BrandingOption(
+                        text = "Branding text for tap_pg",
+                        color = "#C71585",
+                        fontWeight = 300
+                    )
+                }
+            }
 
             services?.createTransaction(language, request)
         } catch (throwable: Throwable) {
@@ -355,6 +471,10 @@ class MainActivity : AppCompatActivity() {
             if (cbCardOnsite.isChecked) {
                 formsOfPayment.add(Checkout.FormsOfPayment.CardOnsite)
             }
+
+//            if (cbUrpay.isChecked) {
+//                formsOfPayment.add(Checkout.FormsOfPayment.URPay)
+//            }
         }
 
         return if (binding?.cbNoFormsOfPayment?.isChecked == true) null else formsOfPayment

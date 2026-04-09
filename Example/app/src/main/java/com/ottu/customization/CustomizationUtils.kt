@@ -2,6 +2,7 @@ package com.ottu.customization
 
 import adil.dev.lib.materialnumberpicker.dialog.NumberPickerDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,8 @@ import com.ottu.databinding.DialogThemeCustomizationBinding
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
+
+private const val TAG = "CustomizationUtils"
 
 fun changeTextStyle(
     context: Context,
@@ -127,6 +130,9 @@ fun changeButtonStyle(
         add(ComponentItem(BUTTON_COMPONENT_COLOR, "Button Color"))
         add(ComponentItem(BUTTON_COMPONENT_TEXT_COLOR, "Button Text"))
         add(ComponentItem(BUTTON_COMPONENT_FONT_TYPE, "Button Text Font Type"))
+        add(ComponentItem(BUTTON_COMPONENT_CORNER_RADIUS, "Button Corner Radius"))
+        add(ComponentItem(BUTTON_COMPONENT_BORDER_WIDTH, "Button Border Width"))
+        add(ComponentItem(BUTTON_COMPONENT_BORDER_COLOR, "Button Border Color"))
     }
 
     val binding = DialogThemeCustomizationBinding
@@ -155,6 +161,25 @@ fun changeButtonStyle(
                                 buttonStyle.copy(fontType = fontType)
                         }
                     }
+
+                    BUTTON_COMPONENT_CORNER_RADIUS -> {
+                        handleValueChange(context, buttonStyle.cornerRadius) { radius ->
+                            buttonStyle = buttonStyle.copy(cornerRadius = radius)
+                        }
+                    }
+
+                    BUTTON_COMPONENT_BORDER_WIDTH -> {
+                        handleValueChange(context, buttonStyle.borderWidth) { radius ->
+                            buttonStyle = buttonStyle.copy(borderWidth = radius)
+                        }
+                    }
+
+                    BUTTON_COMPONENT_BORDER_COLOR -> {
+                        context.openColorPickerView { color ->
+                            buttonStyle =
+                                buttonStyle.copy(borderColor = CheckoutTheme.Color(color.color))
+                        }
+                    }
                 }
             }
         }
@@ -165,6 +190,15 @@ fun changeButtonStyle(
         .setPositiveButton("Confirm") { dialog, which -> onConfirm.invoke(buttonStyle) }
         .setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
         .show()
+}
+
+fun handleValueChange(context: Context, value: Float?, onConfirm: (value: Float) -> Unit) {
+    Log.d(TAG, "handleValueChange, value: $value")
+    val valuesRange = IntRange(value?.toInt() ?: 0, 45)
+    context.openNumberPicker(valuesRange) { value ->
+        onConfirm(value.toFloat())
+        Log.d(TAG, "handleValueChange, new value: $value")
+    }
 }
 
 fun changeSwitchStyle(
@@ -268,6 +302,11 @@ fun Context.openTextFontTypeDialog(
         add(ComponentItem(FONT_TYPE_ROBOTO_BOLD, "Roboto Bold"))
         add(ComponentItem(FONT_TYPE_SF_PRO, "SF Pro"))
         add(ComponentItem(FONT_TYPE_SF_PRO_BOLD, "SF Pro Bold"))
+        add(ComponentItem(FONT_TYPE_SF_PRO_BOLD, "SF Pro Bold"))
+        add(ComponentItem(FONT_TYPE_ALMARAI_BOLD, "Almarai Bold"))
+        add(ComponentItem(FONT_TYPE_ALMARAI_EXTRA_BOLD, "Almarai ExtraBold"))
+        add(ComponentItem(FONT_TYPE_ALMARAI_LIGHT, "Almarai Light"))
+        add(ComponentItem(FONT_TYPE_ALMARAI_REGULAR, "Almarai Regular"))
     }
 
     val adapter = ComponentsAdapter(params) {
@@ -281,6 +320,10 @@ fun Context.openTextFontTypeDialog(
             FONT_TYPE_ROBOTO_BOLD -> com.ottu.checkout.R.font.roboto_bold
             FONT_TYPE_SF_PRO -> com.ottu.checkout.R.font.sf_pro_regular
             FONT_TYPE_SF_PRO_BOLD -> com.ottu.checkout.R.font.sf_pro_bold
+            FONT_TYPE_ALMARAI_BOLD -> com.ottu.checkout.R.font.almarai_bold
+            FONT_TYPE_ALMARAI_EXTRA_BOLD -> com.ottu.checkout.R.font.almarai_extrabold
+            FONT_TYPE_ALMARAI_LIGHT -> com.ottu.checkout.R.font.almarai_light
+            FONT_TYPE_ALMARAI_REGULAR -> com.ottu.checkout.R.font.almarai_regular
             else -> 0
         }
 
