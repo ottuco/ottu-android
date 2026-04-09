@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clipToPadding="false"
     tools:context=".customization.ThemeCustomizationActivity">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDefaults"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
         android:layout_marginHorizontal="24dp"
         android:text="Default Theme" />
 

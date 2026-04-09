@@ -2,8 +2,13 @@ package com.ottu.customization
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ottu.checkout.ui.theme.CheckoutTheme
 import com.ottu.customization.ThemeCustomizationActivityResultContract.Param.RESULT_APPEARANCE_DARK_PARAM
@@ -20,11 +25,25 @@ class ThemeCustomizationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.enableEdgeToEdge(window)
         binding = ActivityThemeCustomizationBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         binding?.setupViews()
+
+        binding?.root?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.updateLayoutParams<MarginLayoutParams> {
+                    leftMargin = insets.left
+                    bottomMargin = insets.bottom
+                    rightMargin = insets.right
+                    topMargin = insets.top
+                }
+
+                WindowInsetsCompat.CONSUMED
+            }
+        }
     }
 
     private fun ActivityThemeCustomizationBinding.setupViews() {
@@ -34,13 +53,12 @@ class ThemeCustomizationActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            val intent = Intent()
-                .putExtras(
-                    bundleOf(
-                        RESULT_APPEARANCE_LIGHT_PARAM to appearanceLight,
-                        RESULT_APPEARANCE_DARK_PARAM to appearanceDark
-                    )
+            val intent = Intent().putExtras(
+                bundleOf(
+                    RESULT_APPEARANCE_LIGHT_PARAM to appearanceLight,
+                    RESULT_APPEARANCE_DARK_PARAM to appearanceDark
                 )
+            )
 
             setResult(RESULT_OK, intent)
             finish()
@@ -144,8 +162,24 @@ class ThemeCustomizationActivity : AppCompatActivity() {
                 handleSelectorItemBackgroundColor(isDark)
             }
 
+            THEME_SDK_SELECTOR_ITEM_BORDER_COLOR -> {
+                handleSelectorItemBorderColor(isDark)
+            }
+
+            THEME_SDK_SELECTOR_ITEM_BORDER_WIDTH -> {
+                handleSelectorItemBorderWidth(isDark)
+            }
+
+            THEME_SDK_SELECTOR_ITEM_CORNER_RADIUS -> {
+                handleSelectorItemCornerRadius(isDark)
+            }
+
             THEME_SDK_SELECTOR_ICON_COLOR -> {
                 handleSelectorIconColor(isDark)
+            }
+
+            THEME_SDK_SELECTOR_DESCRIPTION_TEXT_COLOR -> {
+                handleSelectorDescriptionTextColor(isDark)
             }
 
             THEME_SDK_SAVE_PHONE_ICON_COLOR -> {
@@ -333,11 +367,17 @@ class ThemeCustomizationActivity : AppCompatActivity() {
     private fun handleSelectPaymentHeaderBackgroundColor(isDark: Boolean) {
         openColorPickerView {
             if (isDark) {
-                appearanceDark =
-                    appearanceDark.copy(selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceDark = appearanceDark.copy(
+                    selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(
+                        color = it.color
+                    )
+                )
             } else {
-                appearanceLight =
-                    appearanceLight.copy(selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(color = it.color))
+                appearanceLight = appearanceLight.copy(
+                    selectPaymentMethodHeaderBackgroundColor = CheckoutTheme.Color(
+                        color = it.color
+                    )
+                )
             }
         }
     }
@@ -350,6 +390,18 @@ class ThemeCustomizationActivity : AppCompatActivity() {
             } else {
                 appearanceLight =
                     appearanceLight.copy(paymentItemBackgroundColor = CheckoutTheme.Color(color = it.color))
+            }
+        }
+    }
+
+    private fun handleSelectorItemBorderColor(isDark: Boolean) {
+        openColorPickerView {
+            if (isDark) {
+                appearanceDark =
+                    appearanceDark.copy(paymentItemBorderColor = CheckoutTheme.Color(color = it.color))
+            } else {
+                appearanceLight =
+                    appearanceLight.copy(paymentItemBorderColor = CheckoutTheme.Color(color = it.color))
             }
         }
     }
@@ -378,12 +430,50 @@ class ThemeCustomizationActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleSelectorDescriptionTextColor(isDark: Boolean) {
+        openColorPickerView {
+            if (isDark) {
+                appearanceDark =
+                    appearanceDark.copy(paymentItemDescriptionTextColor = CheckoutTheme.Color(color = it.color))
+            } else {
+                appearanceLight =
+                    appearanceLight.copy(paymentItemDescriptionTextColor = CheckoutTheme.Color(color = it.color))
+            }
+        }
+    }
+
     private fun handleMargins(isDark: Boolean) {
         changeMargins(this) {
             if (isDark) {
                 appearanceDark = appearanceDark.copy(margins = it)
             } else {
                 appearanceLight = appearanceLight.copy(margins = it)
+            }
+        }
+    }
+
+    private fun handleSelectorItemBorderWidth(isDark: Boolean) {
+        handleValueChange(
+            this,
+            if (isDark) appearanceDark.paymentItemBorderWidth else appearanceLight.paymentItemBorderWidth
+        ) {
+            if (isDark) {
+                appearanceDark = appearanceDark.copy(paymentItemBorderWidth = it)
+            } else {
+                appearanceLight = appearanceLight.copy(paymentItemBorderWidth = it)
+            }
+        }
+    }
+
+    private fun handleSelectorItemCornerRadius(isDark: Boolean) {
+        handleValueChange(
+            this,
+            if (isDark) appearanceDark.paymentItemCornerRadius else appearanceLight.paymentItemCornerRadius
+        ) {
+            if (isDark) {
+                appearanceDark = appearanceDark.copy(paymentItemCornerRadius = it)
+            } else {
+                appearanceLight = appearanceLight.copy(paymentItemCornerRadius = it)
             }
         }
     }

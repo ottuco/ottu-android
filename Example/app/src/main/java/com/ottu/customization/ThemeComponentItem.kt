@@ -18,9 +18,14 @@ const val THEME_SHOW_MORE_BUTTON = "THEME_SHOW_MORE_BUTTON"
 const val THEME_SDK_MARGINS = "THEME_SDK_MARGINS"
 const val THEME_SDK_BACKGROUND_COLOR = "THEME_SDK_BACKGROUND_COLOR"
 const val THEME_SDK_MODAL_BACKGROUND_COLOR = "THEME_SDK_MODAL_BACKGROUND_COLOR"
-const val THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR = "THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR"
+const val THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR =
+    "THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR"
 const val THEME_SDK_SELECTOR_ITEM_BACKGROUND_COLOR = "THEME_SDK_SELECTOR_ITEM_BACKGROUND_COLOR"
+const val THEME_SDK_SELECTOR_ITEM_BORDER_COLOR = "THEME_SDK_SELECTOR_ITEM_BORDER_COLOR"
+const val THEME_SDK_SELECTOR_ITEM_BORDER_WIDTH = "THEME_SDK_SELECTOR_ITEM_BORDER_WIDTH"
+const val THEME_SDK_SELECTOR_ITEM_CORNER_RADIUS = "THEME_SDK_SELECTOR_ITEM_CORNER_RADIUS"
 const val THEME_SDK_SELECTOR_ICON_COLOR = "THEME_SDK_SELECTOR_ICON_COLOR"
+const val THEME_SDK_SELECTOR_DESCRIPTION_TEXT_COLOR = "THEME_SDK_SELECTOR_DESCRIPTION_TEXT_COLOR"
 const val THEME_SDK_SAVE_PHONE_ICON_COLOR = "THEME_SDK_SAVE_PHONE_ICON_COLOR"
 
 //Text Component
@@ -38,6 +43,9 @@ const val TEXT_FIELD_COMPONENT_ERROR_TEXT = "TEXT_FIELD_COMPONENT_ERROR_TEXT"
 const val BUTTON_COMPONENT_COLOR = "BUTTON_COMPONENT_COLOR"
 const val BUTTON_COMPONENT_TEXT_COLOR = "BUTTON_COMPONENT_TEXT_COLOR"
 const val BUTTON_COMPONENT_FONT_TYPE = "BUTTON_COMPONENT_FONT_TYPE"
+const val BUTTON_COMPONENT_CORNER_RADIUS = "BUTTON_COMPONENT_CORNER_RADIUS"
+const val BUTTON_COMPONENT_BORDER_WIDTH = "BUTTON_COMPONENT_BORDER_WIDTH"
+const val BUTTON_COMPONENT_BORDER_COLOR = "BUTTON_COMPONENT_BORDER_COLOR"
 
 //Switch Component
 const val SWITCH_COMPONENT_CHECKED_THUMB_COLOR = "SWITCH_COMPONENT_CHECKED_THUMB_COLOR"
@@ -64,6 +72,10 @@ const val FONT_TYPE_ROBOTO = "FONT_TYPE_ROBOTO"
 const val FONT_TYPE_ROBOTO_BOLD = "FONT_TYPE_ROBOTO_BOLD"
 const val FONT_TYPE_SF_PRO = "FONT_TYPE_SF_PRO"
 const val FONT_TYPE_SF_PRO_BOLD = "FONT_TYPE_SF_PRO_BOLD"
+const val FONT_TYPE_ALMARAI_BOLD = "FONT_TYPE_ALMARAI_BOLD"
+const val FONT_TYPE_ALMARAI_EXTRA_BOLD = "FONT_TYPE_ALMARAI_EXTRA_BOLD"
+const val FONT_TYPE_ALMARAI_LIGHT = "FONT_TYPE_ALMARAI_LIGHT"
+const val FONT_TYPE_ALMARAI_REGULAR = "FONT_TYPE_ALMARAI_REGULAR"
 
 data class ComponentItem(
     val tag: String,
@@ -75,8 +87,18 @@ fun getComponents(): List<ComponentItem> {
         add(ComponentItem(THEME_SDK_MARGINS, "Margins"))
         add(ComponentItem(THEME_SDK_BACKGROUND_COLOR, "SDK Background Color"))
         add(ComponentItem(THEME_SDK_MODAL_BACKGROUND_COLOR, "Modal Background Color"))
-        add(ComponentItem(THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR, "Select Payment Method Header Background Color"))
-        add(ComponentItem(THEME_SELECT_PAYMENT_METHOD_HEADER_TEXT, "Select Payment Method Header Text"))
+        add(
+            ComponentItem(
+                THEME_SELECT_PAYMENT_METHOD_HEADER_BACKGROUND_COLOR,
+                "Select Payment Method Header Background Color"
+            )
+        )
+        add(
+            ComponentItem(
+                THEME_SELECT_PAYMENT_METHOD_HEADER_TEXT,
+                "Select Payment Method Header Text"
+            )
+        )
         add(ComponentItem(THEME_MAIN_TITLE_TEXT, "Main Title"))
         add(ComponentItem(THEME_TITLE_TEXT, "Title"))
         add(ComponentItem(THEME_SUBTITLE_TEXT, "Subtitle"))
@@ -93,10 +115,26 @@ fun getComponents(): List<ComponentItem> {
         add(ComponentItem(THEME_SWITCH, "Switch"))
         add(ComponentItem(THEME_SDK_SAVE_PHONE_ICON_COLOR, "Save Phone Number Icon Color"))
         add(ComponentItem(THEME_SDK_SELECTOR_ICON_COLOR, "Select Payment Icon Color"))
+        add(ComponentItem(THEME_SDK_SELECTOR_DESCRIPTION_TEXT_COLOR, "Select Payment Description Color"))
         add(
             ComponentItem(
                 THEME_SDK_SELECTOR_ITEM_BACKGROUND_COLOR,
                 "Select Payment Background Color"
+            )
+        )
+        add(
+            ComponentItem(
+                THEME_SDK_SELECTOR_ITEM_BORDER_COLOR, "Select Payment Border Color"
+            )
+        )
+        add(
+            ComponentItem(
+                THEME_SDK_SELECTOR_ITEM_BORDER_WIDTH, "Select Payment Border Width"
+            )
+        )
+        add(
+            ComponentItem(
+                THEME_SDK_SELECTOR_ITEM_CORNER_RADIUS, "Select Payment Corner Radius"
             )
         )
     }

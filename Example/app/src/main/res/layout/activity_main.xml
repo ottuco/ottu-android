@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -213,6 +214,7 @@
                     android:imeOptions="actionDone"
                     android:enabled="false"
                     android:maxLength="3"
+                    android:text="5"
                     android:inputType="numberDecimal"
                     android:digits="0123456789"
                     android:maxLines="1" />

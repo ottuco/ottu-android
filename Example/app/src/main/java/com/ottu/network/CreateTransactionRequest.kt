@@ -19,6 +19,8 @@ data class CreateTransactionRequest(
     val language: String,
     val payment_type: PayloadPaymentType? = null,
     val agreement: AutoDebitAgreement?,
+    val extra: PaymentDescription?,
+    var branding_options: BrandingOptionsRequest,
 ) {
 
     data class BillingAddress(
@@ -30,5 +32,7 @@ data class CreateTransactionRequest(
     data class CardAcceptanceCriteria(
         val min_expiry_time: Int,
     )
+
+    data class PaymentDescription(val payment_description: String)
 
 }

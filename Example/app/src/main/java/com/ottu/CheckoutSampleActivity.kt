@@ -5,9 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import com.ottu.checkout.Checkout
 import com.ottu.checkout.data.model.localization.PayButtonText
@@ -92,7 +97,7 @@ class CheckoutSampleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.enableEdgeToEdge(window)
         binding = ActivityCheckoutSampleBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
@@ -110,6 +115,20 @@ class CheckoutSampleActivity : AppCompatActivity() {
             scope.launch {
                 delay(20_000)
                 throw RuntimeException("This is a test app crash + ${Math.random()}")
+            }
+        }
+
+        binding?.root?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.updateLayoutParams<MarginLayoutParams> {
+                    leftMargin = insets.left
+                    bottomMargin = insets.bottom
+                    rightMargin = insets.right
+                    topMargin = insets.top
+                }
+
+                WindowInsetsCompat.CONSUMED
             }
         }
     }
