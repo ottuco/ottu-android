@@ -43,16 +43,10 @@ class MainActivity : AppCompatActivity() {
 
     private var amount = 10.0
 
-    //private var merchantId = "alpha.ottu.net"
-    //private var merchantId = "alphabulk.ottu.net"
-    private var merchantId = "staging4.ottu.dev"
+    private var merchantId = ""
 
-    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3" //stage
-    //private var apiKey = "cHSLW0bE.56PLGcUYEhRvzhHVVO9CbF68hmDiXcPI" //alpha
-    //private var apiKey = "D0QYgkMT.1FjA2wCDUcdhSZzulcd6XYnr4zz" //alpha bulk
-
-    //    private var merchantId = "staging4.ottu.dev"
-//    private var apiKey = "kZia0dfY.vEWS0cUV5gWV1JDzIvzDfSxKLUh4qAa3"
+    private var apiKey = ""
+    
     private var customerId: String? = "john2"
     private var currencyCode = "KWD"
 
