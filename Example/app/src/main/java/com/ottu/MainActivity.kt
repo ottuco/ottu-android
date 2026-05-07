@@ -10,6 +10,8 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -37,6 +39,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
@@ -59,6 +63,11 @@ class MainActivity : AppCompatActivity() {
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
     private var customerPhone: String? = "99459272"
+
+    private val languages = Checkout.Language.supportedLanguages
+    private var selectedLanguage: Checkout.Language =
+        Checkout.Language.valueOf(Locale.getDefault().language)
+
 
     private var currentSessionId: String? = null
     private var currentPreloadPayload: TransactionDetails? = null
@@ -117,6 +126,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun ActivityMainBinding.setupViews() {
         btnPay.isEnabled = currentSessionId != null
+
+        spLanguage.adapter = ArrayAdapter(
+            this@MainActivity,
+            android.R.layout.simple_spinner_dropdown_item,
+            languages.map { it.name }
+        )
+        spLanguage.setSelection(languages.indexOf(selectedLanguage))
+        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
+                selectedLanguage = languages[position]
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+
 
         etAmount.setText(amount.toString())
         etCurrencyCode.setText(currencyCode)
@@ -325,10 +354,10 @@ class MainActivity : AppCompatActivity() {
     ): SessionResponse? {
         val services = retrofit(merchantId, apiKey).services()
 
-        var language = Locale.getDefault().language.ifEmpty { "en" }
-        if (language != "ar")
-            language = "en"
+        val language = selectedLanguage.name
         val pgCodes = pgCodes.filter { it.isChecked }.map { it.value }
+
+        Log.d(TAG, "getSession, with language: $language")
 
         return try {
             val payloadPaymentType = if (binding?.cbAutoDebit?.isChecked == true
