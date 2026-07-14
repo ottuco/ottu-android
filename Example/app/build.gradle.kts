@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.ottuco:ottu-android-checkout:2.2.6")
+    implementation("com.github.ottuco:ottu-android-checkout:2.2.8")
 
 
     implementation(libs.datadog.rum)
