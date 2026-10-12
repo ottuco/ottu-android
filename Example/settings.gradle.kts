@@ -1,5 +1,4 @@
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.util.Properties
 
 pluginManagement {
@@ -40,7 +39,9 @@ if (localPropertiesFile.exists()) {
         localProperties.load(stream)
     }
 } else {
-    throw FileNotFoundException("local.properties file not found at ${localPropertiesFile.absolutePath}")
+    // Optional: it only points at a local SDK checkout. Without it the app uses the published SDK,
+    // which is how CI (CodeQL) builds it.
+    println("Android Sample - no local.properties at ${localPropertiesFile.absolutePath}, using the published SDK")
 }
 
 val ottuSdkPath: String? = localProperties.getProperty("ottuSdk")
