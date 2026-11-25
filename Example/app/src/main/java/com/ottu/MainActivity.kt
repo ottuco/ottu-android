@@ -8,10 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
-import android.widget.Toast
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -47,10 +48,10 @@ class MainActivity : AppCompatActivity() {
 
     private var amount = 10.0
 
-    private var merchantId = ""
+    private var merchantId = BuildConfig.MERCHANT_ID
 
-    private var apiKey = ""
-    
+    private var apiKey = BuildConfig.API_KEY
+
     private var customerId: String? = "john2"
     private var currencyCode = "KWD"
 
@@ -59,16 +60,22 @@ class MainActivity : AppCompatActivity() {
 
     private var customerFirstName = "John"
     private var customerLastName = "Smith"
-    private var customerEmail = "john1@some.mail"
+    private var customerEmail = "${customerId}@${merchantId}"
     private val billingCountry = "KW"
     private val billingCity = "Kuwait City"
+
+    // STC phone number:
+//    private var customerPhone: String? = "966557877988"
+
+    // URPay phone number:
+//    private var customerPhone: String? = "966563154349"
+
+    // Tamara phone number:
     private var customerPhone: String? = "99459272"
 
     private val languages = Checkout.Language.supportedLanguages
     private var selectedLanguage: Checkout.Language =
         Checkout.Language.valueOf(Locale.getDefault().language)
-
-
     private var currentSessionId: String? = null
     private var currentPreloadPayload: TransactionDetails? = null
     private var currentThemeAppearancePair: Pair<CheckoutTheme.Appearance?, CheckoutTheme.Appearance?>? =
@@ -97,6 +104,15 @@ class MainActivity : AppCompatActivity() {
     private val themeCustomizationActivityResultLauncher =
         registerForActivityResult(ThemeCustomizationActivityResultContract()) { appearancePair ->
             this.currentThemeAppearancePair = appearancePair
+        }
+
+    private val checkoutActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                currentSessionId = null
+                currentPreloadPayload = null
+                binding?.btnPay?.isEnabled = false
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,7 +161,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
-
 
         etAmount.setText(amount.toString())
         etCurrencyCode.setText(currencyCode)
@@ -314,6 +329,9 @@ class MainActivity : AppCompatActivity() {
                     currentThemeAppearancePair?.second,
                     cbCrash.isChecked,
                     cbFailMerchantPaymentValidation.isChecked,
+                    splitPayButton = cbSplitPayButton.isChecked,
+                    useJetpackCompose = cbUseJetpackCompose.isChecked,
+                    resultLauncher = checkoutActivityResultLauncher,
                 )
             }
         }
@@ -337,7 +355,7 @@ class MainActivity : AppCompatActivity() {
             fetchSessionIdDialog.dismiss()
 
             sessionResponse?.let {
-                session.invoke(it)
+                session(it)
             } ?: run {
                 MaterialAlertDialogBuilder(this@MainActivity).apply {
                     setMessage("Cannot fetch Session Id")
@@ -388,7 +406,7 @@ class MainActivity : AppCompatActivity() {
                 extra = CreateTransactionRequest.PaymentDescription("pd"),
                 branding_options = BrandingOptionsRequest(
                     paymentMethods = BrandingPaymentMethods(
-                         mpgs = BrandingOption(
+                        mpgs = BrandingOption(
                             text = "Branding text for cod",
                             color = "#92CC00",
                             fontWeight = 400
@@ -454,6 +472,13 @@ class MainActivity : AppCompatActivity() {
                 if (pgCodes.contains("ottu_sdk")) {
                     paymentMethods.ottu_sdk = BrandingOption(
                         text = "Branding text for tap_pg",
+                        color = "#C71585",
+                        fontWeight = 300
+                    )
+                }
+                if (pgCodes.contains("benefitpay")) {
+                    paymentMethods.benefitpay = BrandingOption(
+                        text = "Branding Benefit pay",
                         color = "#C71585",
                         fontWeight = 300
                     )

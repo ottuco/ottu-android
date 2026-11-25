@@ -7,19 +7,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.ottu.checkout.Checkout
+import com.ottu.checkout.R as OttuR
 import com.ottu.checkout.data.model.localization.PayButtonText
 import com.ottu.checkout.data.model.payment.CardVerificationResult
 import com.ottu.checkout.network.model.payment.TransactionDetails
-import com.ottu.checkout.ui.base.CheckoutSdkFragment
 import com.ottu.checkout.ui.theme.CheckoutTheme
+import com.ottu.checkout.ui.payment.view.PaymentButton
 import com.ottu.databinding.ActivityCheckoutSampleBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,8 +40,6 @@ private const val TAG = "CheckoutSampleActivity"
 class CheckoutSampleActivity : AppCompatActivity() {
 
     private var binding: ActivityCheckoutSampleBinding? = null
-
-    private var checkoutFragment: CheckoutSdkFragment? = null
 
     private val amount by lazy { intent.extras?.getDouble(AMOUNT_PARAM) }
     private val merchantId by lazy { intent.extras?.getString(MERCHANT_ID_PARAM) }
@@ -93,23 +98,58 @@ class CheckoutSampleActivity : AppCompatActivity() {
         ) ?: false
     }
 
+    private val useJetpackCompose by lazy {
+        intent.extras?.getBoolean(
+            USE_JETPACK_COMPOSE_PARAM, false
+        ) ?: false
+    }
+
+    private val splitPayButton by lazy {
+        intent.extras?.getBoolean(
+            SPLIT_PAY_BUTTON_PARAM, false
+        ) ?: false
+    }
+
+    private val checkoutFragmentState = mutableStateOf<Fragment?>(null)
+
     private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.enableEdgeToEdge(window)
-        binding = ActivityCheckoutSampleBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
 
-
-        if (savedInstanceState != null) {
-            checkoutFragment =
-                supportFragmentManager.findFragmentById(R.id.ottuPaymentView) as CheckoutSdkFragment?
+        if (useJetpackCompose) {
+            val composeView = ComposeView(this).apply {
+                setContent {
+                    CheckoutSampleScreen(
+                        checkoutFragment = checkoutFragmentState.value,
+                        splitPayButton = splitPayButton,
+                    )
+                }
+            }
+            setContentView(composeView)
         } else {
-            initSdk()
+            binding = ActivityCheckoutSampleBinding.inflate(layoutInflater)
+            setContentView(binding?.root)
+            setupViews()
+            binding?.root?.let {
+                ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    v.updateLayoutParams<MarginLayoutParams> {
+                        leftMargin = insets.left
+                        bottomMargin = insets.bottom
+                        rightMargin = insets.right
+                        topMargin = insets.top
+                    }
+
+                    WindowInsetsCompat.CONSUMED
+                }
+            }
         }
 
-        setupViews()
+        if (savedInstanceState == null) {
+            initSdk()
+        }
 
         if (withCrash) {
             scope.launch {
@@ -117,25 +157,43 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 throw RuntimeException("This is a test app crash + ${Math.random()}")
             }
         }
-
-        binding?.root?.let {
-            ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
-                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.updateLayoutParams<MarginLayoutParams> {
-                    leftMargin = insets.left
-                    bottomMargin = insets.bottom
-                    rightMargin = insets.right
-                    topMargin = insets.top
-                }
-
-                WindowInsetsCompat.CONSUMED
-            }
-        }
     }
 
     private fun setupViews() {
         binding?.apply {
+            val splitPayButton = intent.getBooleanExtra(SPLIT_PAY_BUTTON_PARAM, false)
+            nestedWidget.root.isVisible = splitPayButton
+
+            val parent = checkoutContent
+            val paymentButton = PaymentButton(this@CheckoutSampleActivity).apply {
+                id = ViewCompat.generateViewId()
+            }
+            val paymentButtonParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                topToBottom = if (splitPayButton) R.id.switchUiMode else OttuR.id.ottu_checkout_container
+                startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                topMargin = (20 * resources.displayMetrics.density).toInt()
+            }
+            parent.addView(paymentButton, paymentButtonParams)
+
+            if (splitPayButton) {
+                ottuCheckoutContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    topToBottom = paymentButton.id
+                }
+                tvBelowContent.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    topToBottom = nestedWidget.root.id
+                }
+            } else {
+                tvBelowContent.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    topToBottom = paymentButton.id
+                }
+            }
+
             switchUiMode.setOnCheckedChangeListener { _, isChecked ->
+                Log.e(TAG, "setupViews, switchUiMode, is checked: $isChecked")
                 if (isChecked) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 } else {
@@ -190,9 +248,11 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 Checkout.init(
                     context = this@CheckoutSampleActivity,
                     builder = builder,
+                    isSplitPayButton = true,
                     setupPreload = setupPreload,
                     successCallback = {
                         Log.e(TAG, "successCallback: $it")
+                        setResult(RESULT_OK)
                         showResultDialog(it)
                     },
                     cancelCallback = {
@@ -216,8 +276,13 @@ class CheckoutSampleActivity : AppCompatActivity() {
                     ) else null,
                 )
             }.onSuccess {
-                checkoutFragment = it
-                supportFragmentManager.beginTransaction().replace(R.id.ottuPaymentView, it).commit()
+                if (useJetpackCompose) {
+                    checkoutFragmentState.value = it
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .replace(OttuR.id.ottu_checkout_container, it)
+                        .commit()
+                }
             }.onFailure {
                 showErrorDialog(it)
             }
@@ -292,6 +357,8 @@ class CheckoutSampleActivity : AppCompatActivity() {
         private const val WITH_CRASH_PARAM = "WITH_CRASH_PARAM"
         private const val WITH_FAIL_PAYMENT_VALIDATION = "WITH_FAIL_PAYMENT_VALIDATION"
         private const val USE_CUSTOM_STRINGS = "USE_CUSTOM_STRINGS"
+        private const val SPLIT_PAY_BUTTON_PARAM = "SHOW_NESTED_WIDGET_PARAM"
+        private const val USE_JETPACK_COMPOSE_PARAM = "USE_JETPACK_COMPOSE_PARAM"
 
         fun openActivity(
             context: Context,
@@ -309,6 +376,9 @@ class CheckoutSampleActivity : AppCompatActivity() {
             appearanceDark: CheckoutTheme.Appearance? = null,
             withCrash: Boolean = false,
             failPaymentValidation: Boolean = false,
+            splitPayButton: Boolean = false,
+            useJetpackCompose: Boolean = false,
+            resultLauncher: ActivityResultLauncher<Intent>? = null,
         ) {
             val intent = Intent(context, CheckoutSampleActivity::class.java).apply {
                 putExtra(AMOUNT_PARAM, amount)
@@ -325,9 +395,15 @@ class CheckoutSampleActivity : AppCompatActivity() {
                 putExtra(WITH_CRASH_PARAM, withCrash)
                 putExtra(WITH_FAIL_PAYMENT_VALIDATION, failPaymentValidation)
                 putExtra(USE_CUSTOM_STRINGS, useCustomStrings)
+                putExtra(SPLIT_PAY_BUTTON_PARAM, splitPayButton)
+                putExtra(USE_JETPACK_COMPOSE_PARAM, useJetpackCompose)
             }
 
-            context.startActivity(intent)
+            if (resultLauncher != null) {
+                resultLauncher.launch(intent)
+            } else {
+                context.startActivity(intent)
+            }
         }
     }
 }

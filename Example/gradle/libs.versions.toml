@@ -1,8 +1,8 @@
 [versions]
-agp = "8.9.3"
-kotlin = "2.2.20"
+agp = "9.2.1"
+kotlin = "2.3.21"
 coroutines = "1.10.2"
-ksp = "2.2.20-2.0.4"
+ksp = "2.3.12"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -26,9 +26,11 @@ shimmer = "0.5.0"
 colorPicket = "2.3.0"
 expandableLayout = "2.9.2"
 numberPicker = "1.0.3"
-datadogPlugin = "1.21.0"
-datadog = "3.4.0"
+datadogPlugin = "1.30.0"
+datadog = "3.14.1"
 sentry = "8.29.0"
+composeBom = "2024.10.01"
+fragmentCompose = "1.8.5"
 
 
 [libraries]
@@ -76,12 +78,17 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-fragment-compose = { group = "androidx.fragment", name = "fragment-compose", version.ref = "fragmentCompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 datadog = { id = "com.datadoghq.dd-sdk-android-gradle-plugin", version.ref = "datadogPlugin" }
-
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

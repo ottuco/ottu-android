@@ -2,5 +2,6 @@
 <resources>
     <string name="app_name" translatable="false">Ottu Sample</string>
     <string name="failed">Failed</string>
+    <string name="split_pay_button">Split Pay button</string>
     <string name="prepayment_failure_message">Cannot pay your order.\nPlease, check purchase information</string>
 </resources>

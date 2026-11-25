@@ -20,7 +20,7 @@ data class CreateTransactionRequest(
     val payment_type: PayloadPaymentType? = null,
     val agreement: AutoDebitAgreement?,
     val extra: PaymentDescription?,
-    var branding_options: BrandingOptionsRequest,
+    var branding_options: BrandingOptionsRequest? = null,
 ) {
 
     data class BillingAddress(

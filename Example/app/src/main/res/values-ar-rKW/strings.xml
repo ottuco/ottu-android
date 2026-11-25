@@ -2,4 +2,5 @@
 <resources>
     <string name="failed">فشل في بدء عملية الدفع</string>
     <string name="prepayment_failure_message">لا يمكن دفع طلبك.\\nيرجى التحقق من معلومات الشراء.</string>
+    <string name="split_pay_button">زر الدفع المُقسَّم</string>
 </resources>
