@@ -12,25 +12,29 @@ import java.time.Duration
 
 private fun okhttp(apiKey: String) = OkHttpClient
     .Builder()
-    .addInterceptor(HttpLoggingInterceptor().also {
-        it.level = HttpLoggingInterceptor.Level.BODY
-    })
     .readTimeout(Duration.ofSeconds(30))
     .writeTimeout(Duration.ofSeconds(30))
     .connectTimeout(Duration.ofSeconds(30))
     .addInterceptor(Interceptor { chain ->
         val request = chain.request().newBuilder()
-            .addHeader(
+            .header(
                 name = "Content-Type",
                 value = "application/json"
             )
-            .addHeader(
+            .header(
                 name = "Authorization",
                 value = "Api-Key $apiKey"
             )
             .build()
 
         chain.proceed(request)
+    })
+    // Keep logging after the header interceptor so the configured headers are included.
+    .addInterceptor(HttpLoggingInterceptor { message ->
+        android.util.Log.d("Retrofit", message)
+    }.also {
+        it.redactHeader("Authorization")
+        it.level = HttpLoggingInterceptor.Level.BODY
     })
     .build()
 

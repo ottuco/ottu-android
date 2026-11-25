@@ -59,7 +59,7 @@ if (appBuildGradleFile.exists()) {
     println("Android Sample - isDependencyExist: $isDependencyExist")
     if (isDependencyExist && ottuSdkPath != null) {
         println("Android Sample - include build: $ottuSdkPath")
-        includeBuild("$ottuSdkPath") {
+        includeBuild(ottuSdkPath) {
             dependencySubstitution {
                 substitute(module("com.github.ottuco:ottu-android-checkout:"))
                     .using(project(":"))

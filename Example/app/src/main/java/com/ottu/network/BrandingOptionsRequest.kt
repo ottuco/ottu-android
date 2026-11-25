@@ -16,11 +16,13 @@ data class BrandingPaymentMethods(
     @Json(name = "mpgs-testing")
     var mpgs: BrandingOption? = null,
 ) {
-     var cs: BrandingOption? = null
+    var cs: BrandingOption? = null
+
     @Json(name = "nbk-mpgs")
-     var nbk_mpgs: BrandingOption? = null
-     var tap_pg: BrandingOption? = null
-     var ottu_sdk: BrandingOption? = null
+    var nbk_mpgs: BrandingOption? = null
+    var tap_pg: BrandingOption? = null
+    var ottu_sdk: BrandingOption? = null
+    var benefitpay: BrandingOption? = null
 }
 
 @JsonClass(generateAdapter = true)

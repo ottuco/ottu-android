@@ -9,6 +9,7 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/checkoutContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
@@ -64,15 +65,26 @@
             app:layout_constraintTop_toTopOf="@id/tvSwitchUiMode" />
 
         <FrameLayout
-            android:id="@+id/ottuPaymentView"
+            android:id="@id/ottu_checkout_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:padding="0dp"
-            app:layout_constraintBottom_toTopOf="@id/tvBelowContent"
+            app:layout_constraintBottom_toTopOf="@id/nestedWidget"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switchUiMode" />
+
+        <include
+            android:id="@+id/nestedWidget"
+            layout="@layout/nested_widget"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ottu_checkout_container" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvBelowContent"
@@ -84,7 +96,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ottuPaymentView" />
+            app:layout_constraintTop_toBottomOf="@id/nestedWidget" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
