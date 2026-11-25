@@ -11,5 +11,5 @@ plugins {
 // CodeQL's automatic build runs `testClasses`, a task Android projects don't have (RUL-SD-001, #160364).
 // Compile the app instead, so code scanning sees its Kotlin.
 tasks.register("testClasses") {
-    dependsOn(":app:compileDebugKotlin")
+    dependsOn(":app:compileAlphaDebugKotlin")
 }
