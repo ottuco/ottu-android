@@ -39,8 +39,6 @@ if (localPropertiesFile.exists()) {
         localProperties.load(stream)
     }
 } else {
-    // Optional: it only points at a local SDK checkout. Without it the app uses the published SDK,
-    // which is how CI (CodeQL) builds it.
     println("Android Sample - no local.properties at ${localPropertiesFile.absolutePath}, using the published SDK")
 }
 
